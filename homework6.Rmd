@@ -1,0 +1,85 @@
+---
+title: "homework6"
+author: "Joseph Trembley"
+date: "2/28/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+HAPPY <- readRDS("data/HAPPY.rds")
+```
+
+Set values to null
+
+```{r}
+HAPPY <- na_if(HAPPY, "IAP")
+HAPPY <- na_if(HAPPY, "DK")
+HAPPY <- na_if(HAPPY, "NA")
+```
+
+Convert AGE to numeric and replace string value
+
+```{r}
+HAPPY <- HAPPY %>% mutate(AGE = replace(AGE, AGE == "89 AND OLDER", 89), AGE = as.numeric(AGE))
+```
+
+Create degree as leveled factor of DEGREE
+
+```{r}
+HAPPY <- HAPPY %>% mutate(
+  degree = factor(tolower(DEGREE)),
+  degree = factor(degree, levels = c("lt high school", "high school", "junior college", "bachelor", "graduate school"))
+)
+HAPPY %>% ggplot(aes(x = degree)) + geom_bar()
+```
+
+Create happy as leveled factor of HAPPY
+
+```{r}
+HAPPY <- HAPPY %>% mutate(
+  happy = factor(tolower(HAPPY)),
+  happy = factor(happy, levels = c("not too happy", "pretty happy", "very happy"))
+  )
+HAPPY %>% ggplot(aes(x = happy)) + geom_bar()
+```
+
+Create health as leveled factor of health
+
+```{r}
+HAPPY <- HAPPY %>% mutate(
+  health = factor(tolower(HEALTH)),
+  health = factor(health, levels = c("poor", "fair", "good", "excellent"))
+)
+HAPPY %>% ggplot(aes(x = health)) + geom_bar()
+```
+
+Create finrela as leveled factor of finrela
+
+```{r}
+HAPPY <- HAPPY %>% mutate(
+  finrela = factor(tolower(FINRELA)),
+  finrela = factor(finrela, levels = c("far below average", "below average", "average", "above average", "far above average"))
+)
+HAPPY %>% ggplot(aes(x = finrela)) + geom_bar()
+```
+
+```{r}
+saveRDS(HAPPY, "HAPPY.rds")
+```
+
+Studying happines vs finrela (opinion on personal family income) and degree
+
+```{r}
+HAPPY %>% ggplot(aes(x = happy)) + geom_bar() + facet_wrap(~finrela)
+```
+
+```{r}
+HAPPY %>% ggplot(aes(x = happy)) + geom_bar() + facet_wrap(~degree)
+```
+
+When looking at these graphs, it appears that neither financial status nor level of education have an effect on happiness.  In each category, most people say that they are pretty happy.  However one interesting difference is that the people who did not give a financial status also tended to avoid giving their happiness, whereas the people who did not give their level of education still follow the same trends as people who did.  The average value in both categories has the largest difference between values, however this is most likely due to the category having more values overall.
