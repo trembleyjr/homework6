@@ -9,6 +9,8 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+Repo: https://github.com/trembleyjr/homework6
+
 ```{r}
 library(tidyverse)
 HAPPY <- readRDS("data/HAPPY.rds")
